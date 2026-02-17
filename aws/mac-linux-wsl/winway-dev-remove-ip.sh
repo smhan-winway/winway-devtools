@@ -9,12 +9,17 @@
 # ============================================
 REGION="ap-northeast-2"
 
-# Security Group IDs per server name
-declare -A SG_IDS
-SG_IDS["gen-dev"]="sg-xxxxxxxxxxxxxxxxx"       # winway-gen-dev
-SG_IDS["comp-dev"]="sg-xxxxxxxxxxxxxxxxx"       # winway-comp-dev
-SG_IDS["web-dev"]="sg-xxxxxxxxxxxxxxxxx"        # winway-web-dev
-SG_IDS["redhat-dev"]="sg-xxxxxxxxxxxxxxxxx"     # winway-redhat-dev
+# Security Group IDs per server name (Bash 3.2 compatible)
+get_sg_id() {
+  case "$1" in
+    gen-dev)    echo "sg-xxxxxxxxxxxxxxxxx" ;;   # winway-gen-dev
+    comp-dev)   echo "sg-xxxxxxxxxxxxxxxxx" ;;   # winway-comp-dev
+    web-dev)    echo "sg-xxxxxxxxxxxxxxxxx" ;;   # winway-web-dev
+    redhat-dev) echo "sg-xxxxxxxxxxxxxxxxx" ;;   # winway-redhat-dev
+    *)          echo "" ;;
+  esac
+}
+AVAILABLE_SERVERS="gen-dev comp-dev web-dev redhat-dev"
 # ============================================
 
 # Color definitions
@@ -71,7 +76,7 @@ show_usage() {
   echo "  $0 --profile winway --server_name web-dev --ip 1.2.3.4"
   echo ""
   echo "Available server names:"
-  for key in "${!SG_IDS[@]}"; do
+  for key in $AVAILABLE_SERVERS; do
     echo "  - $key"
   done
   echo ""
@@ -90,12 +95,12 @@ if [ -z "$PROFILE" ] || [ -z "$SERVER_NAME" ]; then
 fi
 
 # Validate server name
-SG_ID="${SG_IDS[$SERVER_NAME]}"
+SG_ID=$(get_sg_id "$SERVER_NAME")
 if [ -z "$SG_ID" ]; then
   echo -e "${RED}❌ Unknown server name: '$SERVER_NAME'${NC}"
   echo ""
   echo "Available server names:"
-  for key in "${!SG_IDS[@]}"; do
+  for key in $AVAILABLE_SERVERS; do
     echo "  - $key"
   done
   exit 1

@@ -97,10 +97,10 @@ Write-Host "🔐 Adding IP to Security Group [$ServerName]..." -ForegroundColor 
 Write-Host "   SG ID: $SG_ID"
 
 aws ec2 authorize-security-group-ingress `
-  --group-id $SG_ID `
+  --group-id "$SG_ID" `
   --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=$MY_IP/32,Description=$DESCRIPTION}]" `
-  --profile $Profile `
-  --region $REGION 2>$null
+  --profile "$Profile" `
+  --region "$REGION" 2>$null
 
 if ($LASTEXITCODE -eq 0) {
   Write-Host "✅ IP added successfully" -ForegroundColor Green

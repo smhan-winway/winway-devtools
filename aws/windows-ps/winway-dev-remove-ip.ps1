@@ -90,10 +90,10 @@ Write-Host "🔐 Removing IP from Security Group [$ServerName]..." -ForegroundCo
 Write-Host "   SG ID: $SG_ID"
 
 aws ec2 revoke-security-group-ingress `
-  --group-id $SG_ID `
+  --group-id "$SG_ID" `
   --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=$TARGET_IP/32}]" `
-  --profile $Profile `
-  --region $REGION 2>$null
+  --profile "$Profile" `
+  --region "$REGION" 2>$null
 
 if ($LASTEXITCODE -eq 0) {
   Write-Host "✅ IP removed successfully" -ForegroundColor Green
